@@ -69,7 +69,7 @@ class eClass:
 
         self.try_login()
 
-        response = self.session.get(ECLASS_BASE_URL + "/my")
+        response = self.session.get(ECLASS_BASE_URL)
 
         if response.url != ECLASS_BASE_URL + "/my/":
             print("Login failed.")
@@ -78,7 +78,7 @@ class eClass:
         print("Logged in to eclass.")
 
     def get_courses(self):
-        homepage = self.session.get(ECLASS_BASE_URL + "/my")
+        homepage = self.session.get(ECLASS_BASE_URL)
         page_tree = html.fromstring(homepage.content)
         course_elems = page_tree.xpath(r'//div[contains(@class, "currentcourse")]')
 
@@ -98,10 +98,10 @@ class eClass:
                 self.session.cookies.clear_expired_cookies()
 
         try:
-            response = self.session.get(ECLASS_BASE_URL + "/my")
+            response = self.session.get(ECLASS_BASE_URL)
         except:
             self.session.cookies.clear()
-            response = self.session.get(ECLASS_BASE_URL + "/my")
+            response = self.session.get(ECLASS_BASE_URL)
 
         if "login.ualberta.ca" in response.url:
             # Cookies out of date or nonexistent
@@ -185,7 +185,7 @@ class eClass:
         return cleaned_links
 
     def download_course_content(self, course_name, links):
-        name = "".join(course_name.split()[:2])
+        name = "".join(course_name.split()[:3])
         download_dir = os.path.join(PATH, OUTPUT_FOLDER, name)
         cache_dir = os.path.join(download_dir, CACHE)
         if not os.path.exists(download_dir):
@@ -287,7 +287,7 @@ class eClass:
 
     def clean_cache(self, course_name):
         links = set()
-        name = "".join(course_name.split()[:2])
+        name = "".join(course_name.split()[:3])
         cache_dir = os.path.join(PATH, OUTPUT_FOLDER, name, CACHE)
         try:
             shutil.rmtree(cache_dir)
